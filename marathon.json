@@ -1,5 +1,5 @@
 {
-  "id": "/minio-dcos",
+  "id": "/drake/minio2",
   "instances": 4,
   "cpus": 0.5,
   "mem": 512,
@@ -11,7 +11,7 @@
         "mode": "RW",
         "persistent": {
           "type": "root",
-          "size": 1000
+          "size": 10000
         }
       },
       {
@@ -34,21 +34,39 @@
       }
     ],
     "docker": {
-      "image": "tobilg/minio-dcos",
+      "image": "minyk/minio-dcos",
       "network": "USER",
       "privileged": false,
-      "forcePullImage": true
+      "forcePullImage": true,
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "name": "webui"
+        }
+      ]
     }
   },
-  "ipAddress":{  
-    "networkName":"dcos"
+  "ipAddress": {
+    "networkName": "prod"
   },
   "residency": {
     "taskLostBehavior": "WAIT_FOREVER",
     "relaunchEscalationTimeoutSeconds": 120
   },
+  "label": {
+    "HAPROXY_0_VHOST": "drake.minio.dcos.ajway.kr",
+    "HAPROXY_0_MODE": "http",
+    "HAPROXY_GROUP": "external"
+  },
   "env": {
     "MINIO_ACCESS_KEY": "miniotest",
     "MINIO_SECRET_KEY": "secret123"
-  }
+  },
+  "healthChecks": [
+    {
+      "portIndex": 0,
+      "protocol": "HTTP",
+      "path": "/"
+    }
+  ]
 }

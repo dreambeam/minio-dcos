@@ -14,7 +14,8 @@ INSTANCES=$(curl -l -s -H "Content-Type: application/json" http://master.mesos:8
 echo "Instances: $INSTANCES"
 
 # try until DNS is ready
-ENDPOINT=$(echo "${MARATHON_APP_ID}.marathon.containerip.dcos.thisdcos.directory" | sed -e "s/\///g")
+
+ENDPOINT=$(python /getdomainname.py)
 
 echo "Endpoint: ${ENDPOINT}"
 
@@ -54,7 +55,7 @@ do
 		for endpoint_ip in "${ENPOINT_IPS[@]}"; do
 			MINIO_CMD="${MINIO_CMD} http://${endpoint_ip}/export"
     	done
-		
+
 		break
 	fi
 
